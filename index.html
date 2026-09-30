@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16150f" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Beschwerde v4.4">
+<title>Beschwerde v4.4</title>
+<style>
+:root{
+  --bg:#faf9f7; --fg:#1a1915; --muted:#5c5850; --faint:#8b867c;
+  --card:#fff; --line:#e6e2da;
+  --acc:#2563eb; --acc-bg:#eef4ff;
+  --k2:#0d9488; --k2-bg:#e6f7f5;
+  --k3:#b45309; --k3-bg:#fdf3e3;
+  --red:#dc2626;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16150f; --fg:#f2efe8; --muted:#a8a296; --faint:#7a7568;
+  --card:#211f18; --line:#332f26;
+  --acc:#7ba5ff; --acc-bg:#16233f;
+  --k2:#5eead4; --k2-bg:#10302c;
+  --k3:#fcd34d; --k3-bg:#332708;
+  --red:#f87171;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:26px 18px 80px}
+h1{font-size:24px;margin:0 0 3px;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+h2{font-size:18px;margin:26px 0 9px;letter-spacing:-.01em}
+h2:first-child{margin-top:4px}
+.tabs{display:flex;gap:6px;margin-bottom:18px;border-bottom:1px solid var(--line);padding-bottom:12px;
+  flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{background:none;border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:8px;
+  font:600 14px inherit;cursor:pointer;white-space:nowrap;flex:0 0 auto}
+.tab:hover{color:var(--fg)} .tab.on{background:var(--acc-bg);border-color:var(--acc);color:var(--acc)}
+.hidden{display:none}
+.ctrl{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--muted);padding:5px 12px;border-radius:18px;
+  font:600 13px inherit;cursor:pointer}
+.chip.on{background:var(--acc-bg);border-color:var(--acc);color:var(--acc)}
+.lbl{font-size:13px;color:var(--faint)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px;
+  border-left:4px solid var(--acc)}
+.card.k2{border-left-color:var(--k2)}
+.chead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+.cid{font:800 12.5px inherit;letter-spacing:.04em;background:var(--acc-bg);color:var(--acc);padding:3px 9px;border-radius:5px}
+.card.k2 .cid{background:var(--k2-bg);color:var(--k2)}
+.cde{font-weight:700;font-size:17px}
+.cru{font-size:15px;color:var(--muted)}
+.pos{font-size:12.5px;color:var(--faint);margin-bottom:10px}
+.pos b{color:var(--fg)}
+.last{font:800 11px inherit;letter-spacing:.05em;color:#fff;background:var(--red);padding:2px 7px;border-radius:4px}
+.pflicht{font:800 11px inherit;letter-spacing:.05em;color:var(--red);border:1px solid var(--red);padding:1px 6px;border-radius:4px}
+.rahmen{background:var(--bg);border-radius:9px;padding:13px 15px;margin-bottom:12px}
+.de{font-size:16px;line-height:1.55;white-space:pre-wrap}
+.ru{font-size:14.5px;color:var(--muted);margin-top:7px;white-space:pre-wrap}
+.slotmark{background:var(--k3-bg);color:var(--k3);padding:1px 6px;border-radius:4px;font-weight:600}
+.slots{border-top:1px dashed var(--line);padding-top:11px}
+.slot{padding:9px 0;border-bottom:1px dashed var(--line)}
+.slot:last-child{border-bottom:none}
+.snote{font-size:12px;color:var(--faint);margin-bottom:3px}
+.sde{font-size:15.5px}
+.sru{font-size:14px;color:var(--muted)}
+.grp{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.gtitle{font:700 12.5px inherit;color:var(--k3);margin-bottom:4px}
+.mini{display:grid;grid-template-columns:1fr;gap:0}
+.mini .slot{padding:6px 0}
+.mini .sde{font-size:14.5px}
+.mini .sru{font-size:13px}
+.joker{font:800 10.5px inherit;letter-spacing:.06em;color:#fff;background:var(--acc);padding:1px 6px;border-radius:4px;margin-right:6px;vertical-align:1px}
+.falle{border-top:1px dashed var(--line);margin-top:11px;padding-top:11px}
+.ftitle{font:800 11px inherit;letter-spacing:.07em;color:var(--red);margin-bottom:5px}
+.ftext{font-size:14px;color:var(--muted)}
+.c1tags{margin-top:9px;display:flex;gap:6px;flex-wrap:wrap}
+.c1tag{font-size:11.5px;background:var(--k3-bg);color:var(--k3);padding:2px 8px;border-radius:12px}
+.drill{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;text-align:center}
+.dlab{font:700 11.5px inherit;letter-spacing:.09em;color:var(--faint);text-transform:uppercase;margin-bottom:12px}
+.dq{font-size:19px;font-style:italic;margin-bottom:6px}
+.dqru{font-size:15px;color:var(--muted);margin-bottom:18px}
+.opt{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);
+  color:var(--fg);padding:12px 15px;border-radius:9px;margin-bottom:9px;font:15px inherit;cursor:pointer}
+.opt:hover{border-color:var(--acc)}
+.opt.ok{background:var(--acc-bg);border-color:var(--acc);color:var(--acc);font-weight:600}
+.opt.no{border-color:var(--red);color:var(--red)}
+.score{font-size:13px;color:var(--faint);margin:14px 0 10px}
+.btn{background:var(--card);border:1px solid var(--line);color:var(--fg);padding:9px 18px;
+  border-radius:9px;font:600 14px inherit;cursor:pointer;margin:0 3px}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+table{width:100%;border-collapse:collapse;margin:6px 0 14px;font-size:14.5px}
+th{text-align:left;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);
+  font-weight:700;padding:6px 9px 6px 0;border-bottom:1px solid var(--line)}
+td{padding:8px 9px 8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.k{font:800 12.5px inherit;background:var(--acc-bg);color:var(--acc);padding:2px 7px;border-radius:5px;display:inline-block;margin:1px 2px 1px 0}
+.k.b{background:var(--k2-bg);color:var(--k2)}
+.lead{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:12px;padding:15px 17px;margin:0 0 14px}
+.lead b{color:var(--acc)}
+.lead.warn{border-left-color:var(--red)} .lead.warn b{color:var(--red)}
+.hint{font-size:14px;color:var(--muted);margin:0 0 11px}
+.step{display:flex;gap:11px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:none}
+.step .n{flex:0 0 30px;color:var(--faint);font:700 12px inherit;padding-top:3px}
+.cheat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.citem{padding:11px 0;border-bottom:1px dashed var(--line)}
+.citem:last-child{border-bottom:none}
+.form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:10px}
+.tbsp{padding:8px 0;border-bottom:1px dashed var(--line)}
+.tbsp:last-child{border-bottom:none}
+.notiz{font-size:13px;color:var(--faint);font-style:italic}
+.res{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-bottom:9px}
+.resblk{font-size:11.5px;color:var(--faint);margin-bottom:4px}
+.lt{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:15px}
+.lt td{padding:7px 8px 7px 0;border-bottom:1px solid var(--line);vertical-align:top;width:52%}
+.lt td.r{width:48%;color:var(--muted);font-size:14px}
+.lt tr.bh td{background:var(--acc-bg);color:var(--acc);font:700 13px inherit;padding:7px 9px;border-bottom:none}
+.lt tr.bh.k2 td{background:var(--k2-bg);color:var(--k2)}
+.lt tr.fr td:first-child{font-weight:600}
+.lt td.sl{padding-left:14px}
+.lt td.cov{cursor:pointer;color:transparent!important;background:repeating-linear-gradient(45deg,var(--line) 0 6px,transparent 6px 12px);border-radius:6px}
+.lt td.cov *{visibility:hidden}
+.ver{font:700 12px inherit;background:var(--k3-bg);color:var(--k3);padding:2px 8px;border-radius:5px;vertical-align:3px}
+.kette{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 8px}
+.kette .kg{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:6px 10px;font-size:13.5px}
+.kette .arr{color:var(--faint)}
+@media(max-width:560px){
+  .lt{font-size:14px} .lt td.r{font-size:13px}
+  .wrap{padding:16px 12px 60px} h1{font-size:21px}
+  .tab{padding:7px 12px;font-size:13px}
+  .card{padding:13px 14px} .de{font-size:15.5px} .drill{padding:16px}
+  .dq{font-size:17px} table{font-size:13.5px}
+  .lead,.cheat{padding:13px 14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Beschwerde <span id="verTag" class="ver"></span></h1>
+<p class="sub">Ответ на жалобу · Deutsch-Test für den Beruf B2 · к каждой немецкой единице дан русский перевод</p>
+
+<div class="tabs">
+  <button class="tab on" data-t="lern">Учить · 2 колонки</button>
+  <button class="tab" data-t="muster">Образцы писем</button>
+  <button class="tab" data-t="start">Как это устроено</button>
+  <button class="tab" data-t="kartei">Картотека</button>
+  <button class="tab" data-t="d1">Дрилл: шеф → блок</button>
+  <button class="tab" data-t="d2">Дрилл: рус → нем</button>
+  <button class="tab" data-t="cheat">Шпаргалка</button>
+  <button class="tab" data-t="info">Правила</button>
+  <button class="tab" data-t="res">Справка (не учить)</button>
+</div>
+
+<section id="lern">
+  <div class="ctrl"><span class="lbl">Что:</span>
+    <button class="chip on" data-v="joker">письмо-джокер</button>
+    <button class="chip" data-v="kern">ядро</button>
+    <button class="chip" data-v="alle">всё</button>
+    <button class="chip" data-v="nurjoker">только джокеры</button></div>
+  <div class="ctrl"><span class="lbl">Закрыть:</span>
+    <button class="chip on" data-h="none">ничего</button>
+    <button class="chip" data-h="ru">русский</button>
+    <button class="chip" data-h="de">немецкий</button>
+    <span class="lbl">· нажми на закрытую клетку — откроется</span></div>
+  <p class="hint" id="lernHint"></p>
+  <div id="lernBody"></div>
+</section>
+
+<section id="muster" class="hidden">
+  <p class="hint">Готовые письма, собранные из блоков. Прочёл записку → нашёл похожую форму → меняешь только выделенное по записке.</p>
+  <div class="ctrl" id="musterChips"></div>
+  <p class="hint" id="musterWann"></p>
+  <div id="musterBody"></div>
+</section>
+
+<section id="start" class="hidden">
+  <div class="lead">
+    <p><b>Письмо собирается из готовых предложений. Сочинять на экзамене ничего не надо.</b></p>
+    <p class="hint">Блок — выученное предложение. В некоторых есть дырка. В каждой дырке есть <span class="joker">ДЖОКЕР</span> — вариант, который подходит к любой ситуации. А если шеф в записке сам диктует, что написать, — его слова вставляются в дырку.</p>
+  </div>
+
+  <h2>Три правила</h2>
+  <div class="cheat">
+    <div class="step"><div class="n">1</div><div><b>Не знаешь, что вставить — джокер.</b> Менее точно, зато без ошибок.</div></div>
+    <div class="step"><div class="n">2</div><div><b>Шеф продиктовал — бери его слова.</b> По одному из трёх превращений (вкладка «Правила»).</div></div>
+    <div class="step"><div class="n">3</div><div><b>Порядок блоков всегда один — это цепочка.</b> Каждый блок цепляется за предыдущий. Номер блока — это его имя, а не место: место в письме написано на каждой карточке.</div></div>
+  </div>
+
+  <h2>Цепочка письма</h2>
+  <div class="cheat" id="ketteStart"></div>
+
+  <h2>Порядок письма</h2>
+  <div class="cheat" id="orderStart"></div>
+  <p class="hint">Синие — ядро, учить первым. Зелёные — второй круг: редкие, вставляются внутрь письма. <b>Блок 9 — всегда последний</b>, после него только подпись.</p>
+
+
+  <h2>Шесть форм письма</h2>
+  <p class="hint">Прочёл записку → выбрал форму → добавил или убрал пару блоков по пунктам шефа.</p>
+  <div id="formenStart"></div>
+
+  <div class="lead warn">
+    <p><b>v4.4 — проверено на 56 заданиях. Новые строки корректор ещё не видела.</b></p>
+    <p class="hint">53 задания из сборников и 3 твоих реальных закрываются ядром, вторым кругом, джокерами и словами шефа. Новое после корректора (показать ей в октябре): блоки 4, 5, 7б, 8 (рамки), 14, причины «третье лицо», слоты блока 6 из твоего шаблона.</p>
+  </div>
+</section>
+
+<section id="kartei" class="hidden">
+  <div class="ctrl"><span class="lbl">Показать:</span><span id="kreisFilter"></span></div>
+  <div id="cards"></div>
+</section>
+
+<section id="d1" class="hidden">
+  <div class="drill">
+    <div class="dlab">Записка шефа требует…</div>
+    <div class="dq" id="d1q"></div>
+    <div class="dqru" id="d1qru"></div>
+    <div id="d1opts"></div>
+    <div class="score" id="d1score"></div>
+    <button class="btn" id="d1reset">Начать заново</button>
+  </div>
+</section>
+
+<section id="d2" class="hidden">
+  <div class="drill">
+    <div class="dlab">Вспомни по-немецки</div>
+    <div class="dq" id="d2ru"></div>
+    <div class="de" id="d2de" style="margin:16px 0;min-height:24px"></div>
+    <div class="score" id="d2pos"></div>
+    <button class="btn" id="d2show">Показать</button>
+    <button class="btn" id="d2next">Дальше</button>
+  </div>
+</section>
+
+<section id="cheat" class="hidden"><div class="cheat" id="cheatBody"></div></section>
+<section id="info" class="hidden"><div id="infoBody"></div></section>
+<section id="res" class="hidden">
+  <div class="lead warn"><p><b>Это НЕ учат.</b></p>
+  <p class="hint">Заменённое после корректора и вырезанное при сжатии. Лежит здесь для сравнения и на случай экзотической ситуации при подготовке дома.</p></div>
+  <div id="resBody"></div>
+</section>
+
+</div>
+
+<script src="beschwerde_data.js?v=4.4"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const mark = s => esc(s).replace(/\[([^\]]+)\]/g,'<span class="slotmark">$1</span>');
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+const BY = Object.fromEntries(BLOECKE.map(b=>[b.id,b]));
+const POS = id => REIHENFOLGE.indexOf(id);
+const N = REIHENFOLGE.length;
+
+const SECS=['lern','muster','start','kartei','d1','d2','cheat','info','res'];
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));
+  SECS.forEach(s=>$('#'+s).classList.toggle('hidden', s!==b.dataset.t));
+  window.scrollTo(0,0);
+});
+
+function posLine(b){
+  const i=POS(b.id);
+  if(b.letzter) return `<div class="pos"><span class="last">ВСЕГДА ПОСЛЕДНИЙ</span> · после него только подпись</div>`;
+  const prev = i>0 ? REIHENFOLGE[i-1] : null;
+  const nextCore = REIHENFOLGE.slice(i+1).find(id=>BY[id].kreis===1);
+  if(b.kreis===2) return `<div class="pos">Место <b>${i+1}</b> из ${N} · ставится <b>после блока ${prev}</b>, перед блоком ${REIHENFOLGE[i+1]} — если нужен</div>`;
+  return `<div class="pos">Место <b>${i+1}</b> из ${N} в письме</div>`;
+}
+
+/* ---------- КАРТОТЕКА — в порядке письма ---------- */
+let kSel='alle';
+const nK=k=>BLOECKE.filter(b=>b.kreis===k).length;
+const KREISE=[['alle','всё — '+BLOECKE.length],['1','ядро — '+nK(1)],['2','второй круг — '+nK(2)]];
+function buildFilter(){
+  $('#kreisFilter').innerHTML = KREISE.map(([k,n])=>`<button class="chip ${k===kSel?'on':''}" data-k="${k}">${n}</button>`).join(' ');
+  $('#kreisFilter').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{kSel=c.dataset.k;buildFilter();renderCards();});
+}
+const one = s=>`<div class="slot">${(s.note||s.joker)?`<div class="snote">${s.joker?'<span class="joker">ДЖОКЕР</span>':''}${esc(s.note||'')}</div>`:''}
+  <div class="sde">${mark(s.de)}</div><div class="sru">${mark(s.ru)}</div></div>`;
+function renderCards(){
+  const list = REIHENFOLGE.map(id=>BY[id]).filter(b=> kSel==='alle' || String(b.kreis)===kSel);
+  $('#cards').innerHTML = list.map(b=>{
+    const slots=(b.slots||[]).map(one).join('');
+    const gr=(b.gruppen||[]).map(g=>`<div class="grp"><div class="gtitle">${esc(g.titel)}</div><div class="mini">${g.items.map(one).join('')}</div></div>`).join('');
+    return `<div class="card ${b.kreis===2?'k2':''}">
+      <div class="chead"><span class="cid">${b.id}</span><span class="cde">${esc(b.de)}</span><span class="cru">${esc(b.ru)}</span>
+        ${b.pflicht?'<span class="pflicht">ОБЯЗАТЕЛЬНО</span>':''}</div>
+      ${posLine(b)}
+      <div class="rahmen"><div class="de">${mark(b.rahmen.de)}</div><div class="ru">${mark(b.rahmen.ru)}</div></div>
+      ${slots?`<div class="slots">${slots}</div>`:''}${gr}
+      ${b.falle?`<div class="falle"><div class="ftitle">ЛОВУШКА</div><div class="ftext">${esc(b.falle)}</div></div>`:''}
+      ${(b.c1&&b.c1.length)?`<div class="c1tags">${b.c1.map(t=>`<span class="c1tag">${esc(t)}</span>`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+/* ---------- ДРИЛЛ 1 ---------- */
+let q1=[], i1=0, ok1=0;
+function start1(){ q1=shuffle(TRIGGER.slice()); i1=0; ok1=0; show1(); }
+function show1(){
+  if(i1>=q1.length){ $('#d1q').textContent='Прогон закончен'; $('#d1qru').textContent=`Правильно ${ok1} из ${q1.length}`; $('#d1opts').innerHTML=''; $('#d1score').textContent=''; return; }
+  const t=q1[i1];
+  $('#d1q').textContent='„'+t.de+'"'; $('#d1qru').textContent=t.ru;
+  const opts = shuffle([BY[t.blk], ...shuffle(BLOECKE.filter(b=>b.id!==t.blk)).slice(0,3)]);
+  $('#d1opts').innerHTML = opts.map(o=>`<button class="opt" data-id="${o.id}">${o.id} · ${esc(o.ru)}</button>`).join('');
+  $('#d1score').textContent = `${i1+1} / ${q1.length} · правильно ${ok1}`;
+  $('#d1opts').querySelectorAll('.opt').forEach(btn=>btn.onclick=()=>{
+    const right = btn.dataset.id===t.blk; if(right) ok1++;
+    $('#d1opts').querySelectorAll('.opt').forEach(x=>{ if(x.dataset.id===t.blk) x.classList.add('ok'); else if(x===btn) x.classList.add('no'); x.onclick=null; });
+    setTimeout(()=>{ i1++; show1(); }, right?550:1600);
+  });
+}
+$('#d1reset').onclick=start1;
+
+/* ---------- ДРИЛЛ 2 ---------- */
+let q2=[], i2=0;
+function build2(){
+  const out=[];
+  BLOECKE.forEach(b=>{
+    out.push({ru:b.rahmen.ru, de:b.rahmen.de, tag:b.id+' · каркас'});
+    (b.slots||[]).forEach(s=>out.push({ru:s.ru, de:s.de, tag:b.id+' · вставка'+(s.joker?' · джокер':'')}));
+    (b.gruppen||[]).forEach(g=>g.items.forEach(s=>out.push({ru:s.ru, de:s.de, tag:b.id+' · '+g.titel.split(' —')[0].toLowerCase()})));
+  });
+  return out;
+}
+function start2(){ q2=shuffle(build2()); i2=0; show2(); }
+function show2(){ if(i2>=q2.length){ i2=0; q2=shuffle(q2); } const c=q2[i2];
+  $('#d2ru').textContent=c.ru; $('#d2de').innerHTML=''; $('#d2pos').textContent=`${i2+1} / ${q2.length} · ${c.tag}`; }
+$('#d2show').onclick=()=>{ $('#d2de').innerHTML=mark(q2[i2].de); };
+$('#d2next').onclick=()=>{ i2++; show2(); };
+
+/* ---------- ШПАРГАЛКА ---------- */
+function renderCheat(){
+  $('#cheatBody').innerHTML = REIHENFOLGE.map((id,n)=>{ const b=BY[id];
+    return `<div class="citem"><div class="chead"><span class="cid" style="${b.kreis===2?'background:var(--k2-bg);color:var(--k2)':''}">${b.id}</span>
+      <span class="cde">${esc(b.de)}</span><span class="cru">${esc(b.ru)}</span>
+      ${b.letzter?'<span class="last">ПОСЛЕДНИЙ</span>':''}</div>
+      <div class="pos">место ${n+1} · ${esc(b.haeuf)}</div>
+      <div class="de">${mark(b.rahmen.de)}</div><div class="ru">${mark(b.rahmen.ru)}</div></div>`;
+  }).join('');
+}
+function orderHTML(){
+  return REIHENFOLGE.map((id,n)=>{ const b=BY[id];
+    return `<div class="step"><div class="n">${n+1}</div><div><span class="k ${b.kreis===2?'b':''}">${id}</span> <b>${esc(b.de)}</b> <span style="color:var(--muted)">· ${esc(b.ru)}</span>${b.letzter?' <span class="last">ПОСЛЕДНИЙ</span>':''}</div></div>`;
+  }).join('');
+}
+
+/* ---------- ПРАВИЛА ---------- */
+function formenHTML(){
+  return FORMEN.map(f=>`<div class="form"><div class="chead"><span class="cde">${esc(f.titel)}</span><span class="cru">${esc(f.ru)}</span></div>
+    <div style="margin-bottom:6px">${f.bloecke.map(id=>`<span class="k ${BY[id].kreis===2?'b':''}">${id}</span>`).join(' ')}</div>
+    <div class="ftext">Когда: ${esc(f.wann)}</div></div>`).join('');
+}
+function transformHTML(){
+  return TRANSFORM.map(t=>`<div class="card"><div class="chead"><span class="cid">${t.id}</span><span class="cde">${esc(t.titel)}</span></div>
+    <div class="ftext" style="margin-bottom:8px">${esc(t.regel)}</div>
+    ${t.bsp.map(x=>`<div class="tbsp"><div class="notiz">в записке: ${esc(x.notiz)}</div><div class="sde">→ ${esc(x.de)}</div><div class="sru">${esc(x.ru)}</div></div>`).join('')}
+    </div>`).join('');
+}
+function renderInfo(){
+  $('#infoBody').innerHTML =
+    '<h2>Три превращения: слова шефа → в дырку</h2>' + transformHTML() +
+    '<h2>Шесть форм письма</h2>' + formenHTML() +
+    '<h2>Правила сборки</h2>' +
+    REGELN.map(r=>`<div class="card k2"><div class="chead"><span class="cde">${esc(r.titel)}</span></div>
+      <div class="ftext" style="margin-bottom:${r.de?'10px':'0'}">${esc(r.text)}</div>
+      ${r.de?`<div class="rahmen"><div class="de">${esc(r.de)}</div><div class="ru">${esc(r.ru)}</div></div>`:''}</div>`).join('') +
+    '<h2>Четыре критерия оценки</h2>' +
+    KRITERIEN.map(k=>`<div class="card"><div class="chead"><span class="cde">${esc(k.de)}</span><span class="cru">${esc(k.ru)}</span></div><div class="ftext">${esc(k.text)}</div></div>`).join('');
+}
+function renderRes(){
+  $('#resBody').innerHTML = RESERVE.map(r=>`<div class="res"><div class="resblk">${esc(r.blk)}</div><div class="sde">${mark(r.de)}</div><div class="sru">${esc(r.ru)}</div></div>`).join('');
+}
+
+/* ---------- УЧИТЬ: две колонки ---------- */
+let lView='joker', lHide='none';
+const cell=(h,cls)=>`<td class="${cls||''}">${h}</td>`;
+function rowsFor(b, onlyJ){
+  let h=`<tr class="bh ${b.kreis===2?'k2':''}"><td colspan="2">${b.id} · ${esc(b.de)} — ${esc(b.ru)}${b.kreis===2?' · если нужен':''}${b.letzter?' · ВСЕГДА ПОСЛЕДНИЙ':''}</td></tr>`;
+  const dl=b.rahmen.de.split('\n'), rl=b.rahmen.ru.split('\n');
+  dl.forEach((l,i)=>{ if(l.trim()) h+=`<tr class="fr">${cell(mark(l),'de')}${cell(mark(rl[i]||''),'r ru')}</tr>`; });
+  (b.slots||[]).filter(s=>!onlyJ||s.joker).forEach(s=>h+=`<tr>${cell((s.joker?'<span class="joker">ДЖОКЕР</span>':'– ')+mark(s.de),'de sl')}${cell(mark(s.ru),'r ru')}</tr>`);
+  (b.gruppen||[]).forEach(g=>{ const it=g.items.filter(s=>!onlyJ||s.joker); if(!it.length) return;
+    h+=`<tr><td colspan="2" class="sl"><span class="gtitle">${esc(g.titel)}</span></td></tr>`;
+    it.forEach(s=>h+=`<tr>${cell((s.joker?'<span class="joker">ДЖОКЕР</span>':'– ')+mark(s.de),'de sl')}${cell(mark(s.ru),'r ru')}</tr>`); });
+  return h;
+}
+function renderLern(){
+  let h='';
+  if(lView==='joker'){
+    const m=MUSTER.find(x=>x.id==='J');
+    $('#lernHint').innerHTML='<b>Выучить первым.</b> 8 блоков, подходят к ЛЮБОМУ заданию, даже если в записке ничего не понял. Остальное — замены к этим строкам.';
+    h='<table class="lt">'+m.saetze.map(x=>`<tr>${cell(mark(x.de),'de')}${cell(mark(x.ru),'r ru')}</tr>`).join('')+'</table>';
+  } else {
+    const ids=REIHENFOLGE.filter(id=>lView!=='kern'||BY[id].kreis===1);
+    $('#lernHint').textContent = lView==='nurjoker' ? 'Только каркасы и джокеры — минимальный набор.' : (lView==='kern' ? 'Ядро — 9 блоков, в порядке письма.' : 'Все блоки в порядке письма. Зелёные — только если шеф просит.');
+    h='<table class="lt">'+ids.map(id=>rowsFor(BY[id], lView==='nurjoker')).join('')+'</table>';
+  }
+  $('#lernBody').innerHTML=h; applyHide();
+}
+function applyHide(){
+  document.querySelectorAll('#lernBody td.de, #lernBody td.ru').forEach(td=>{
+    const cov = (lHide==='ru' && td.classList.contains('ru')) || (lHide==='de' && td.classList.contains('de'));
+    td.classList.toggle('cov',cov); td.onclick = cov ? ()=>td.classList.remove('cov') : null; });
+}
+document.querySelectorAll('#lern [data-v]').forEach(c=>c.onclick=()=>{ lView=c.dataset.v; document.querySelectorAll('#lern [data-v]').forEach(x=>x.classList.toggle('on',x===c)); renderLern(); });
+document.querySelectorAll('#lern [data-h]').forEach(c=>c.onclick=()=>{ lHide=c.dataset.h; document.querySelectorAll('#lern [data-h]').forEach(x=>x.classList.toggle('on',x===c)); applyHide(); });
+
+/* ---------- ОБРАЗЦЫ ---------- */
+let mSel='J';
+function renderMuster(){
+  $('#musterChips').innerHTML = MUSTER.map(m=>`<button class="chip ${m.id===mSel?'on':''}" data-m="${m.id}">${m.id==='J'?'джокер':m.id}</button>`).join(' ');
+  $('#musterChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{mSel=c.dataset.m; renderMuster();});
+  const m=MUSTER.find(x=>x.id===mSel); const f=FORMEN.find(x=>x.id===mSel);
+  $('#musterWann').innerHTML = `<b>${esc(m.titel)}</b> · ${esc(m.ru)}${f?` · блоки: ${f.bloecke.map(id=>`<span class="k ${BY[id].kreis===2?'b':''}">${id}</span>`).join(' ')}`:''}`;
+  $('#musterBody').innerHTML = '<table class="lt">'+m.saetze.map(x=>`<tr><td class="de"><span class="k ${BY[x.id].kreis===2?'b':''}">${x.id}</span> ${mark(x.de)}</td><td class="r ru">${mark(x.ru)}</td></tr>`).join('')+'</table>';
+}
+function ketteHTML(){
+  return KETTE.map((k,n)=>`<div class="step"><div class="n">${n+1}</div><div><b>${esc(k.schritt)}</b> ${k.bloecke.map(id=>`<span class="k ${BY[id].kreis===2?'b':''}">${id}</span>`).join(' ')}${k.link?`<div class="ftext">${esc(k.link)}</div>`:''}</div></div>`).join('');
+}
+
+$('#verTag').textContent = 'v'+DATA_VERSION;
+$('#ketteStart').innerHTML = ketteHTML();
+renderLern(); renderMuster();
+$('#orderStart').innerHTML = orderHTML();
+$('#formenStart').innerHTML = formenHTML();
+buildFilter(); renderCards(); start1(); start2(); renderCheat(); renderInfo(); renderRes();
+</script>
+</body>
+</html>
